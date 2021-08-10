@@ -24,7 +24,7 @@ public class DaoGames {
         List<BeanGames> listGames = new ArrayList<>();
         try{
             con = ConnectionMySQL.getConnection();
-            cstm = con.prepareCall("{call sp_findGames}");
+            cstm = con.prepareCall("SELECT * FROM games;");
             rs = cstm.executeQuery();
 
             while(rs.next()){
@@ -41,11 +41,13 @@ public class DaoGames {
                 beanGames.setDatePremiere(rs.getString("date_premiere"));
                 beanGames.setStatus(rs.getInt("status"));
                 beanGames.setCategory_idCategory(beanCategory);
+
+                listGames.add(beanGames);
             }
         }catch(SQLException e){
-
+            CONSOLE.error("Ha ocurrido algún error: " + e.getMessage());
         }finally {
-
+            ConnectionMySQL.closeConnections(con, cstm, rs);
         }
         return listGames;
     }
